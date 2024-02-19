@@ -32,6 +32,7 @@
 #include "anonymous_tokens/cpp/testing/utils.h"
 #include <openssl/base.h>
 #include <openssl/digest.h>
+#include "anonymous_tokens/cpp/client/anonymous_tokens_rsa_bssa_client.h"
 
 // Generates a random string of size string_length.
 std::string GetRandomString(int string_length) {
@@ -45,6 +46,8 @@ std::string GetRandomString(int string_length) {
   return rand;
 }
 
+using namespace std;
+
 absl::Status RunDemo() {
   // Construct RSA public key with a strong rsa modulus.
   auto [test_rsa_public_key, _] =
@@ -55,6 +58,13 @@ absl::Status RunDemo() {
   if (!rsa_public_key.ok()) {
     return rsa_public_key.status();
   }
+
+  anonymous_tokens::RSAPublicKey asgag;
+
+  asgag.set_n(test_rsa_public_key.n);
+  asgag.set_e(test_rsa_public_key.e);
+  cout << asgag.SerializeAsString() << endl;
+
 
   // Compute RSA BSSA Public Key Token ID.
   absl::StatusOr<std::string> public_key_der =
